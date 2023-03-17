@@ -23,6 +23,7 @@
     {%- endif -%}
     {{ "\n" }}
     select * from ({{ dbt_unit_testing.render_node(model_node) }} {{ "\n" }} ) as t
+    SETTINGS join_algorithm='hash'
   {%- endset -%}
 
   {% do return(model_complete_sql) %}
@@ -85,7 +86,7 @@
       {% set name = node.name %}
     {%- endif %}
 
-    select * from {{ dbt_unit_testing.quote_identifier(node.database) ~ '.' ~ dbt_unit_testing.quote_identifier(node.schema) ~ '.' ~ dbt_unit_testing.quote_identifier(name) }} where false
+    select * from {{ dbt_unit_testing.quote_identifier(node.database) ~ '.' ~ dbt_unit_testing.quote_identifier(name) }} where false
   {%- else -%}
     {% if complete %}
       {{ dbt_unit_testing.build_model_complete_sql(node) }}
